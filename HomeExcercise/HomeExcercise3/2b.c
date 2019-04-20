@@ -48,7 +48,6 @@ void printList(List* lst) {
 		printf("%d ",*(currentNode->dataPtr));
 		currentNode=currentNode->next;
 	}
-    printf("\n");
 }
 
 int isEmptyList(const List* lst)

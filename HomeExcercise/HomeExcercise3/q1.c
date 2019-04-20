@@ -51,9 +51,11 @@ void main()
         insertDataToEndList(&lst, ch);
         ch = (char)getchar();
     }
+
     student = unScramble(lst);
+
     printStudent(&student);
-    
+
     freeList(&student.first);
 }
 
@@ -173,15 +175,11 @@ void printList(List* lst)
 		printf("%c",*(currentNode->dataPtr));
 		currentNode=currentNode->next;
 	}
-    printf("\n");
 }
 
 void printStudent(Student* student)
 {
-    printf("Name: ");
     printList(&(student->first));
-    printf("Grade: %d", student->grade);
-    printf("\n");
 }
 
 void makeEmptyList(List* lst)

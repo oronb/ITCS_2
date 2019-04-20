@@ -46,7 +46,6 @@ void insertNodeToEndYList(YList* lst, YListNode * newTail);
 unsigned int getXOccurrences(List coord_list, int x);
 int isEmptyList(const List* lst);
 int isEmptyYList(const YList* lst);
-void printList(List lst);
 void freeList(const List* lst);
 void freeYList(const YList* lst);
 void checkAlloc(void* val);
@@ -101,16 +100,11 @@ List getCoordList()
 
     makeEmptyList(&CoordList);
 
-    printf("Please enter the number of points to be entered:\n");
     scanf("%d", &size);
 
-    printf("Please enter the dots:\n");
     for(i = 0; i < size; i++)
     {
-        //Insert x
-        printf("Insert x\n");
         scanf("%d", &x);
-        printf("Insert y\n");
         scanf("%d", &y);
         if(searchValueInList(CoordList,x,&searchRes))
         {
@@ -265,25 +259,6 @@ unsigned int getXOccurrences(List coord_list, int x)
         currLst=currLst->next;
     }
     return count;
-}
-
-void printList(List lst)
-{
-    XListNode* currLst=lst.head;
-    YListNode* currYLst;
-
-    while(currLst != NULL)
-    {
-        currYLst=currLst->YListInXNode->head;
-        printf("The list of %d:\n",currLst->num);
-        while(currYLst != NULL)
-        {
-            printf("(%d,%d) ",currLst->num,currYLst->num);
-            currYLst=currYLst->next;
-        }
-        printf("\n");
-        currLst=currLst->next;
-    }
 }
 
 void freeList(const List* lst)
