@@ -69,7 +69,7 @@ void main()
         printf("The point (%d,%d) didn't appear\n",x,y);
     else
         printf("The point (%d,%d) already appeared\n",x,y);
-    printList(coordList);
+        
     freeList(&coordList);
 }
 

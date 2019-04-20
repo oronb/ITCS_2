@@ -24,6 +24,7 @@ ListNode* createNewListNode(int num, ListNode * next);
 void printList(List* lst);
 int isEmptyList(const List* lst);
 List merge(List lst1, List lst2);
+void checkAlloc(void* val);
 
 void main()
 {
@@ -199,7 +200,7 @@ List merge(List lst1, List lst2)
     return mergedList;
 }
 
-void checkAlloc(void* val )
+void checkAlloc(void* val)
 {
     if (!val) {
         puts("Allocation error\n");

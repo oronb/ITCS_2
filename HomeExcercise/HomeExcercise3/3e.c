@@ -409,16 +409,11 @@ List getCoordList()
 
     makeEmptyList(&CoordList);
 
-    printf("Please enter the number of points to be entered:\n");
     scanf("%d", &size);
 
-    printf("Please enter the dots:\n");
     for(i = 0; i < size; i++)
     {
-        //Insert x
-        printf("Insert x\n");
         scanf("%d", &x);
-        printf("Insert y\n");
         scanf("%d", &y);
         if(searchValueInList(CoordList,x,&searchRes))
         {

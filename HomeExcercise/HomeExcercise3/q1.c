@@ -175,11 +175,14 @@ void printList(List* lst)
 		printf("%c",*(currentNode->dataPtr));
 		currentNode=currentNode->next;
 	}
+    printf("\n");
 }
 
 void printStudent(Student* student)
 {
+    printf("First name: ");
     printList(&(student->first));
+    printf("Grade: %d",student->grade);
 }
 
 void makeEmptyList(List* lst)
