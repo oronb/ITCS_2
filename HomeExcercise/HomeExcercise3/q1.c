@@ -82,8 +82,10 @@ Student unScramble (List lst)
             //Insert digit to the grade
             dig=charCheckCurr - '0';
             grade=grade * digPlace + dig;
-            digPlace*=10;
-
+            if(digPlace == 0 || digPlace == 1)
+            {
+                digPlace*=10;
+            }
             //Remove node from list
             deleteNodeFromList(&lst, prevNode, currNode);
         }
@@ -164,7 +166,6 @@ void freeList(List* lst)
             currNode=currNode->next;
         }
     }
-
 }
 
 void printList(List* lst)
