@@ -83,6 +83,7 @@ void main()
     freeList(&coordList);
 
 }
+// Remove coordinate from coordinate list
 int removeCoordinate(List *coord_list, int x, int y)
 {
     int coordCount;
@@ -125,6 +126,8 @@ int removeCoordinate(List *coord_list, int x, int y)
     }
     return 0;
 }
+
+//Removes ylist that xnode points to and removes the xnode from coordinate list
 void removeXNodeFromList( List* list, XListNode* nodeToBeDeleted)
 {
     //Define variables
@@ -156,6 +159,8 @@ void removeXNodeFromList( List* list, XListNode* nodeToBeDeleted)
     freeYList(YListToRemove);
     free(tempNode);
 }
+
+//Remove ynode from ynode's list
 void removeYNodeFromList( YList* list,YListNode* prevNode, YListNode* nodeToBeDeleted)
 {
     //Define variables
@@ -180,7 +185,11 @@ void removeYNodeFromList( YList* list,YListNode* prevNode, YListNode* nodeToBeDe
     }
     free(tempNode);
 }
-//Search for coordinate in cordinate list. Returns the number of the occurnces of the coordinate
+
+/*
+Search for coordinate in cordinate list. 
+Returns the number of the occurnces of the coordinate
+*/
 int countCoordinate(List *coord_list, int x, int y, int* xCount,XListNode** removeX, YListNode** removeY,YListNode** preRemoveY)
 {
     int res=0;
@@ -209,6 +218,7 @@ int searchValueInList(List lst, int num, XListNode** res)
     return 0;
 }
 
+//Count the number of the appearnces of (x,*) in the coordinate list
 int countValueInList(List lst, int num, XListNode** removeX)
 {
     XListNode* currLst1;
@@ -225,7 +235,8 @@ int countValueInList(List lst, int num, XListNode** removeX)
     }
     return count;
 }
-//Counts the appereances of the num value in y list and returns it
+
+//Counts the number appereances of the of (*,y) and returns it
 int countValueInYList(YList lst, int num, YListNode** removeY,YListNode** preRemoveY)
 {
     YListNode* currLst1;
@@ -343,40 +354,19 @@ void insertNodeToEndYList(YList* lst, YListNode * newTail)
 	}
 }
 
+//Check if coordinate list is empty
 int isEmptyList(const List* lst)
 {
     return lst->head == NULL;
 }
 
+//Check if Y list is empty
 int isEmptyYList(const YList* lst)
 {
     return lst->head == NULL;
 }
 
-unsigned int getPairOccurrences(List coord_list, int x, int y)
-{
-    XListNode* currLst=coord_list.head;
-    YListNode* currYLst;
-    int count=0;
-
-    while(currLst != NULL)
-    {
-        currYLst=currLst->YListInXNode->head;
-        while(currYLst != NULL)
-        {
-            if((currLst->num == x) && (currYLst->num == y))
-            {
-                count++;
-                printf("Found matched spot! ");
-                printf("(%d,%d) \n",currLst->num,currYLst->num);
-            }
-            currYLst=currYLst->next;
-        }
-        currLst=currLst->next;
-    }
-    return count;
-}
-
+//Print coordinate list
 void printList(List lst)
 {
     XListNode* currLst=lst.head;
@@ -396,6 +386,7 @@ void printList(List lst)
     }
 }
 
+//Free cordinate list
 void freeList(const List* lst)
 {
     XListNode* tempNode;
@@ -411,6 +402,7 @@ void freeList(const List* lst)
     }
 }
 
+//Free y list
 void freeYList(const YList* lst)
 {
     YListNode* tempNode;
@@ -425,7 +417,7 @@ void freeYList(const YList* lst)
 
 }
 
-
+//Input coordinate list
 List getCoordList()
 {
     List CoordList;
