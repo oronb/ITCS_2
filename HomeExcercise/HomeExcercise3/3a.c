@@ -1,0 +1,265 @@
+
+//#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h> 
+
+
+//Declare definitions
+
+
+typedef struct YlistNode{
+    int num;
+    struct YlistNode* next;
+} YListNode;
+
+typedef struct Ylist
+{
+    YListNode* head;
+    YListNode* tail;
+} YList;
+
+typedef struct XlistNode{
+    YList YListInXNode; //Pointer or the list itself?
+    int num;
+    struct XlistNode* next;
+    struct XlistNode* prev;
+} XListNode;
+
+typedef struct list
+{
+	XListNode* head;
+	XListNode* tail;
+}List;
+
+//Declare functions
+List getCoordList();
+int searchValueInList(List lst, int num, XListNode** res);
+void makeEmptyList(List* lst);
+void makeEmptyYList(YList* lst);
+void insertDataToEndList(List* lst, int num, YList YListInXNode);
+void insertDataToEndYList(YList* lst, int num);
+XListNode* createNewListXNode(int num, YList YListInXNode, XListNode* next, XListNode* prev);
+YListNode* createNewYListNode(int num, YListNode* next);
+void insertXNodeToEndList(List* lst, XListNode * newTail);
+void insertNodeToEndYList(YList* lst, YListNode * newTail);
+unsigned int getPairOccurrences(List coord_list, int x, int y);
+//void freeList(List* lst);
+int isEmptyList(const List* lst);
+int isEmptyYList(const YList* lst);
+void printList(List lst);
+
+int main()
+{
+    List coordList;
+
+    int x, y;
+    unsigned int res;
+
+    // The user will enter the number of points followed by the points.
+    // The pointes will be entered in a sorted fashion.
+    // i.e. first by the x value and then by y.
+    // for example (5 points): 5 1 2 1 5 2 7 3 3 3 8
+    // are: (1,2),(1,5),(2,7),(3,3),(3,8)
+    coordList = getCoordList();
+    printList(coordList);
+
+    // get the (x,y) to look for
+    printf("Please enter xy to look for (together) and than press enter\n");
+    scanf("%d%d", &x, &y);
+
+    res = getPairOccurrences(coordList, x, y);
+
+    printf("The point (%d,%d) appears %u times\n", x, y, res);
+
+}
+
+List getCoordList()
+{
+    List CoordList;
+    XListNode* searchRes;
+    int size, x, y, i;
+    YList ylist;
+
+    makeEmptyList(&CoordList);
+
+    printf("Please enter the number of points to be entered:\n");
+    scanf("%d", &size);
+
+    printf("Please enter the dots:\n");
+    for(i = 0; i < size; i++)
+    {
+        //Insert x
+        printf("Insert x\n");
+        scanf("%d", &x);
+        printf("Insert y\n");
+        scanf("%d", &y);
+        if(searchValueInList(CoordList,x,&searchRes))
+        {
+            ylist=searchRes->YListInXNode;
+            insertDataToEndYList(&ylist,y);          
+            //Inserts new y node to the end of ylist that xnode with x value points to
+        }
+        else
+        {
+            makeEmptyYList(&ylist);
+            insertDataToEndYList(&ylist,y);
+            insertDataToEndList(&CoordList,x,ylist);
+            //Inserts new x node to the end of xlist and create new ylist with ynode (includes y) that x node points to
+        }
+
+    }
+    return CoordList;
+}
+
+//Search for a number in x nodes list
+int searchValueInList(List lst, int num, XListNode** res)
+{
+    XListNode* currLst1;
+    currLst1=lst.head;
+    while(currLst1 != NULL)
+    {
+        if(currLst1->num == num)
+        {
+            *res=currLst1;
+            return 1;
+        }
+        currLst1=currLst1->next;
+    }
+    return 0;
+}
+//Makes empty xnodes list
+void makeEmptyList(List* lst)
+{
+	lst->head = lst->tail = NULL;
+}
+//Makes empty ynodes list
+void makeEmptyYList(YList* lst)
+{
+	lst->head = lst->tail = NULL;
+}
+
+//Insert Xnode to the end of Xnode's list
+void insertDataToEndList(List* lst, int num, YList YListInXNode) 
+{
+	XListNode* newTail;
+
+	newTail = createNewListXNode(num, YListInXNode, NULL, lst->tail);
+	insertXNodeToEndList(lst, newTail);
+}
+
+//Insert Ynode to the end of Ynode's list
+void insertDataToEndYList(YList* lst, int num) 
+{
+	YListNode* newTail;
+
+	newTail = createNewYListNode(num, NULL);
+	insertNodeToEndYList(lst, newTail);
+}
+
+//Create Xnode
+XListNode* createNewListXNode(int num, YList YListInXNode, XListNode* next, XListNode* prev)
+{
+	XListNode* res;
+
+	res = (XListNode*)malloc(sizeof(XListNode));
+	res->num = num;
+    res->YListInXNode=YListInXNode;
+	res->next = next;
+    res->prev = prev;
+
+	return res;
+}
+
+//Create Ynode
+YListNode* createNewYListNode(int num, YListNode* next)
+{
+	YListNode* res;
+
+	res = (YListNode*)malloc(sizeof(YListNode));
+	res->num = num;
+	res->next = next;
+
+	return res;
+}
+
+//Inserts Xnode to the end of Xnode's list
+void insertXNodeToEndList(List* lst, XListNode * newTail) 
+{
+	if (isEmptyList(lst))
+	{
+		lst->head = lst->tail = newTail;
+	}
+	else
+	{
+		lst->tail->next = newTail;
+		lst->tail = newTail;
+	}
+}
+
+//Inserts Ynode to the end of Ynode's list
+void insertNodeToEndYList(YList* lst, YListNode * newTail) 
+{
+	if (isEmptyYList(lst))
+	{
+		lst->head = lst->tail = newTail;
+	}
+	else
+	{
+		lst->tail->next = newTail;
+		lst->tail = newTail;
+	}
+}
+
+int isEmptyList(const List* lst)
+{
+    return lst->head == NULL;
+}
+
+int isEmptyYList(const YList* lst)
+{
+    return lst->head == NULL;
+}
+
+unsigned int getPairOccurrences(List coord_list, int x, int y)
+{
+    XListNode* currLst=coord_list.head;
+    YListNode* currYLst;
+    int count=0;
+
+    while(currLst != NULL)
+    {
+        currYLst=currLst->YListInXNode.head;
+        while(currYLst != NULL)
+        {
+            if((currLst->num == x) && (currYLst->num == y))
+            {
+                count++;
+                printf("Found matched spot! ");
+                printf("(%d,%d) \n",currLst->num,currYLst->num);
+            }
+            currYLst=currYLst->next;
+        }
+        currLst=currLst->next;
+    }
+    return count;
+}
+
+void printList(List lst)
+{
+    XListNode* currLst=lst.head;
+    YListNode* currYLst;
+
+    while(currLst != NULL)
+    {
+        currYLst=currLst->YListInXNode.head;
+        printf("The list of %d:\n",currLst->num);
+        while(currYLst != NULL)
+        {
+            printf("(%d,%d) ",currLst->num,currYLst->num);
+            currYLst=currYLst->next;
+        }
+        printf("\n");
+        currLst=currLst->next;
+    }
+}
