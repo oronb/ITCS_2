@@ -20,7 +20,7 @@ typedef struct Ylist
 } YList;
 
 typedef struct XlistNode{
-    YList YListInXNode; //Pointer or the list itself?
+    YList* YListInXNode; //Pointer or the list itself?
     int num;
     struct XlistNode* next;
     struct XlistNode* prev;
@@ -39,7 +39,7 @@ void makeEmptyList(List* lst);
 void makeEmptyYList(YList* lst);
 void insertDataToEndList(List* lst, int num, YList YListInXNode);
 void insertDataToEndYList(YList* lst, int num);
-XListNode* createNewListXNode(int num, YList YListInXNode, XListNode* next, XListNode* prev);
+XListNode* createNewListXNode(int num, YList ylst, XListNode* next, XListNode* prev);
 YListNode* createNewYListNode(int num, YListNode* next);
 void insertXNodeToEndList(List* lst, XListNode * newTail);
 void insertNodeToEndYList(YList* lst, YListNode * newTail);
@@ -79,7 +79,7 @@ List getCoordList()
     List CoordList;
     XListNode* searchRes;
     int size, x, y, i;
-    YList ylist;
+    YList* ylist;
 
     makeEmptyList(&CoordList);
 
@@ -97,14 +97,14 @@ List getCoordList()
         if(searchValueInList(CoordList,x,&searchRes))
         {
             ylist=searchRes->YListInXNode;
-            insertDataToEndYList(&ylist,y);          
+            insertDataToEndYList(ylist,y);          
             //Inserts new y node to the end of ylist that xnode with x value points to
         }
         else
         {
-            makeEmptyYList(&ylist);
-            insertDataToEndYList(&ylist,y);
-            insertDataToEndList(&CoordList,x,ylist);
+            makeEmptyYList(ylist);
+            insertDataToEndYList(ylist,y);
+            insertDataToEndList(&CoordList,x,*ylist);
             //Inserts new x node to the end of xlist and create new ylist with ynode (includes y) that x node points to
         }
 
@@ -140,11 +140,11 @@ void makeEmptyYList(YList* lst)
 }
 
 //Insert Xnode to the end of Xnode's list
-void insertDataToEndList(List* lst, int num, YList YListInXNode) 
+void insertDataToEndList(List* lst, int num, YList ylst) 
 {
 	XListNode* newTail;
 
-	newTail = createNewListXNode(num, YListInXNode, NULL, lst->tail);
+	newTail = createNewListXNode(num, ylst, NULL, lst->tail);
 	insertXNodeToEndList(lst, newTail);
 }
 
@@ -158,11 +158,14 @@ void insertDataToEndYList(YList* lst, int num)
 }
 
 //Create Xnode
-XListNode* createNewListXNode(int num, YList YListInXNode, XListNode* next, XListNode* prev)
+XListNode* createNewListXNode(int num, YList ylst, XListNode* next, XListNode* prev)
 {
 	XListNode* res;
+    YList* YListInXNode;
 
 	res = (XListNode*)malloc(sizeof(XListNode));
+    YListInXNode = ((YList*)malloc(sizeof(YList)));
+    *YListInXNode=ylst;
 	res->num = num;
     res->YListInXNode=YListInXNode;
 	res->next = next;
@@ -229,7 +232,7 @@ unsigned int getPairOccurrences(List coord_list, int x, int y)
 
     while(currLst != NULL)
     {
-        currYLst=currLst->YListInXNode.head;
+        currYLst=currLst->YListInXNode->head;
         while(currYLst != NULL)
         {
             if((currLst->num == x) && (currYLst->num == y))
@@ -252,7 +255,7 @@ void printList(List lst)
 
     while(currLst != NULL)
     {
-        currYLst=currLst->YListInXNode.head;
+        currYLst=currLst->YListInXNode->head;
         printf("The list of %d:\n",currLst->num);
         while(currYLst != NULL)
         {
