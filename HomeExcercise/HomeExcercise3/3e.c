@@ -39,7 +39,7 @@ void removeXNodeFromList( List* list, XListNode* nodeToBeDeleted);
 void removeYNodeFromList( YList* list,YListNode* prevNode, YListNode* nodeToBeDeleted);
 int searchValueInList(List lst, int num, XListNode** res);
 int countCoordinate(List *coord_list, int x, int y, int* xCount,XListNode** removeX, YListNode** removeY,YListNode** preRemoveY);
-int countValueInList(List lst, int num, XListNode** removeX);
+unsigned int getXOccurrences(List coord_list, int x, XListNode** removeX);
 int countValueInYList(YList lst, int num, YListNode** removeY,YListNode** preRemoveY);
 void makeEmptyList(List* lst);
 void makeEmptyYList(YList* lst);
@@ -98,9 +98,9 @@ int removeCoordinate(List *coord_list, int x, int y)
     }
     else if (coordCount == 1)
     {
-        removeYNodeFromList(removeX->YListInXNode,preRemoveY,removeY);
         if(xCount == 1)
         {
+            removeYNodeFromList(removeX->YListInXNode,preRemoveY,removeY);
             removeXNodeFromList(coord_list,removeX);
             //Delete ylist's node(free), ylist* from Xnode(free) ,Xnode(free)
             return 3;
@@ -109,6 +109,7 @@ int removeCoordinate(List *coord_list, int x, int y)
         {
             removeYNodeFromList(removeX->YListInXNode,preRemoveY,removeY);
             //delete the value and free it
+            return 0;
         }
 
     }
@@ -122,7 +123,6 @@ int removeCoordinate(List *coord_list, int x, int y)
     {
         return 0;
     }
-    return 0;
 }
 
 //Removes ylist that xnode points to and removes the xnode from coordinate list
@@ -191,7 +191,7 @@ Returns the number of the occurnces of the coordinate
 int countCoordinate(List *coord_list, int x, int y, int* xCount,XListNode** removeX, YListNode** removeY,YListNode** preRemoveY)
 {
     int res=0;
-    *xCount=countValueInList(*coord_list,x,removeX);
+    *xCount=getXOccurrences(*coord_list,x,removeX);
     if(*xCount > 0)
     {
         res=countValueInYList(*((*removeX)->YListInXNode),y,removeY,preRemoveY);
@@ -216,20 +216,26 @@ int searchValueInList(List lst, int num, XListNode** res)
     return 0;
 }
 
-//Count the number of the appearnces of (x,*) in the coordinate list
-int countValueInList(List lst, int num, XListNode** removeX)
+//Get how much (x,*) appearnces there is
+unsigned int getXOccurrences(List coord_list, int x, XListNode** removeX)
 {
-    XListNode* currLst1;
-    currLst1=lst.head;
+    XListNode* currLst=coord_list.head;
+    YListNode* currYLst;
     int count=0;
-    while(currLst1 != NULL)
+
+    while(currLst != NULL)
     {
-        if(currLst1->num == num)
+        currYLst=currLst->YListInXNode->head;
+        while(currYLst != NULL)
         {
-            *removeX=currLst1;
-            count++;
+            if(currLst->num == x)
+            {
+                *removeX=currLst;
+                count++;
+            }
+            currYLst=currYLst->next;
         }
-        currLst1=currLst1->next;
+        currLst=currLst->next;
     }
     return count;
 }

@@ -178,7 +178,7 @@ int isEmptyList(const List* lst)
     return lst->head == NULL;
 }
 
-void checkAlloc(void* val )
+void checkAlloc(void* val)
 {
     if (!val) {
         puts("Allocation error\n");
