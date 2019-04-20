@@ -44,10 +44,11 @@ YListNode* createNewYListNode(int num, YListNode* next);
 void insertXNodeToEndList(List* lst, XListNode * newTail);
 void insertNodeToEndYList(YList* lst, YListNode * newTail);
 unsigned int getPairOccurrences(List coord_list, int x, int y);
-//void freeList(List* lst);
 int isEmptyList(const List* lst);
 int isEmptyYList(const YList* lst);
 void printList(List lst);
+void freeList(const List* lst);
+void freeYList(const YList* lst);
 
 int main()
 {
@@ -79,7 +80,8 @@ List getCoordList()
     List CoordList;
     XListNode* searchRes;
     int size, x, y, i;
-    YList* ylist;
+    YList* exitsYlist;
+    YList newYList;
 
     makeEmptyList(&CoordList);
 
@@ -96,15 +98,15 @@ List getCoordList()
         scanf("%d", &y);
         if(searchValueInList(CoordList,x,&searchRes))
         {
-            ylist=searchRes->YListInXNode;
-            insertDataToEndYList(ylist,y);          
+            exitsYlist=searchRes->YListInXNode;
+            insertDataToEndYList(exitsYlist,y);          
             //Inserts new y node to the end of ylist that xnode with x value points to
         }
         else
         {
-            makeEmptyYList(ylist);
-            insertDataToEndYList(ylist,y);
-            insertDataToEndList(&CoordList,x,*ylist);
+            makeEmptyYList(&newYList);
+            insertDataToEndYList(&newYList,y);
+            insertDataToEndList(&CoordList,x,newYList);
             //Inserts new x node to the end of xlist and create new ylist with ynode (includes y) that x node points to
         }
 
@@ -265,4 +267,33 @@ void printList(List lst)
         printf("\n");
         currLst=currLst->next;
     }
+}
+
+void freeList(const List* lst)
+{
+    XListNode* tempNode;
+    XListNode* currXNodeList = lst->head;
+
+    while(currXNodeList != NULL)
+    {
+        tempNode=currXNodeList;
+        freeYList(currXNodeList->YListInXNode);
+        free(currXNodeList->YListInXNode);
+        currXNodeList=currXNodeList->next;
+        free(tempNode);
+    }
+}
+
+void freeYList(const YList* lst)
+{
+    YListNode* tempNode;
+    YListNode* currYNodeList = lst->head;
+
+    while(currYNodeList != NULL)
+    {
+        tempNode=currYNodeList;
+        currYNodeList=currYNodeList->next;
+        free(tempNode);
+    }
+
 }
