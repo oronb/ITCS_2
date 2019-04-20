@@ -52,9 +52,9 @@ void insertNodeToEndYList(YList*  lst, YListNode * newTail);
 int insertCoordinate(List *coord_list, int x, int y);
 int isEmptyList(const List* lst);
 int isEmptyYList(const YList* lst);
-void printList(List lst);
 void freeList(const List* lst);
 void freeYList(const YList* lst);
+void checkAlloc(void* val);
 
 void main()
 {
@@ -66,7 +66,6 @@ void main()
     coordList = getCoordList();
 
     // get the (x,y) to remove
-    printf("Enter the point that you want to remove\n");
     scanf("%d%d", &x, &y);
 
     res = removeCoordinate(&coordList, x, y);
@@ -79,7 +78,6 @@ void main()
         printf("The point (%d,%d) was the only point with this x\n",x,y);
     else
         printf("Other\n");
-    printList(coordList);
     freeList(&coordList);
 
 }
@@ -304,7 +302,9 @@ XListNode* createNewListXNode(int num, YList ylst, XListNode* next, XListNode* p
     YList* YListInXNode;
 
 	res = (XListNode*)malloc(sizeof(XListNode));
+    checkAlloc(res);
     YListInXNode = ((YList*)malloc(sizeof(YList)));
+    checkAlloc(YListInXNode);
     *YListInXNode=ylst;
 	res->num = num;
     res->YListInXNode=YListInXNode;
@@ -320,6 +320,7 @@ YListNode* createNewYListNode(int num, YListNode* next)
 	YListNode* res;
 
 	res = (YListNode*)malloc(sizeof(YListNode));
+    checkAlloc(res);
 	res->num = num;
 	res->next = next;
 
@@ -364,26 +365,6 @@ int isEmptyList(const List* lst)
 int isEmptyYList(const YList* lst)
 {
     return lst->head == NULL;
-}
-
-//Print coordinate list
-void printList(List lst)
-{
-    XListNode* currLst=lst.head;
-    YListNode* currYLst;
-
-    while(currLst != NULL)
-    {
-        currYLst=currLst->YListInXNode->head;
-        printf("The list of %d:\n",currLst->num);
-        while(currYLst != NULL)
-        {
-            printf("(%d,%d) ",currLst->num,currYLst->num);
-            currYLst=currYLst->next;
-        }
-        printf("\n");
-        currLst=currLst->next;
-    }
 }
 
 //Free cordinate list
@@ -455,4 +436,12 @@ List getCoordList()
 
     }
     return CoordList;
+}
+
+void checkAlloc(void* val )
+{
+    if (!val) {
+        puts("Allocation error\n");
+        exit(0);
+    }
 }

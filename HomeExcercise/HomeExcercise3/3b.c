@@ -49,6 +49,7 @@ int isEmptyYList(const YList* lst);
 void printList(List lst);
 void freeList(const List* lst);
 void freeYList(const YList* lst);
+void checkAlloc(void* val);
 
 void main()
 {
@@ -181,7 +182,9 @@ XListNode* createNewListXNode(int num, YList ylst, XListNode* next, XListNode* p
     YList* YListInXNode;
 
 	res = (XListNode*)malloc(sizeof(XListNode));
+    checkAlloc(res);
     YListInXNode = ((YList*)malloc(sizeof(YList)));
+    checkAlloc(YListInXNode);
     *YListInXNode=ylst;
 	res->num = num;
     res->YListInXNode=YListInXNode;
@@ -197,6 +200,7 @@ YListNode* createNewYListNode(int num, YListNode* next)
 	YListNode* res;
 
 	res = (YListNode*)malloc(sizeof(YListNode));
+    checkAlloc(res);
 	res->num = num;
 	res->next = next;
 
@@ -311,4 +315,12 @@ void freeYList(const YList* lst)
         free(tempNode);
     }
 
+}
+
+void checkAlloc(void* val )
+{
+    if (!val) {
+        puts("Allocation error\n");
+        exit(0);
+    }
 }

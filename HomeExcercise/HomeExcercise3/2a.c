@@ -3,7 +3,8 @@
 #include <string.h>
 #include <stdlib.h> 
 
-typedef struct listNode{
+typedef struct listNode
+{
 	int* dataPtr;
 	struct listNode* next;
 }ListNode;
@@ -24,6 +25,7 @@ List merge(List lst1, List lst2);
 ListNode* createNewListNode(int num, ListNode * next);
 void printList(List* lst);
 int isEmptyList(const List* lst);
+void checkAlloc(void* val);
 
 
 int main()
@@ -72,6 +74,21 @@ List getList()
 void freeList(List* lst)
 {
 
+    //Define variables
+    ListNode* currNode=lst->head;
+    ListNode* tempNode;
+
+    if(lst->head != NULL)
+    {
+        while(currNode != NULL)
+        {
+            tempNode=currNode;
+            free(tempNode->dataPtr);
+            free(tempNode);
+            currNode=currNode->next;
+        }
+    }
+
 }
 
 void makeEmptyList(List* lst)
@@ -90,7 +107,9 @@ ListNode* createNewListNode(int num, ListNode* next) {
 	ListNode* res;
 
 	res = (ListNode*)malloc(sizeof(ListNode));
+    checkAlloc(res);
 	res->dataPtr = (int*)malloc(sizeof(int));
+    checkAlloc(res->dataPtr);
 	*(res->dataPtr) = num;
 	res->next = next;
 
@@ -159,3 +178,11 @@ int isEmptyList(const List* lst)
 {
     return lst->head == NULL;
 }
+
+void checkAlloc(void* val )
+{
+    if (!val) {
+        puts("Allocation error\n");
+        exit(0);
+    }
+}    

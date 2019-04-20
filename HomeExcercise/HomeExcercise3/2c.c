@@ -25,9 +25,9 @@ ListNode* createNewListNode(int num, ListNode * next);
 void printList(List* lst);
 int isEmptyList(const List* lst);
 void recurseMerge(ListNode* currNodeLst1, ListNode* currNodeLst2,List* mergedList);
+void checkAlloc(void* val );
 
-
-int main()
+void main()
 {
 
     List lst1, lst2, mergedList;
@@ -40,15 +40,7 @@ int main()
     printf("Merged list:\n");
     printList(&mergedList);
 
-	//Testing
-	printf("print list1 \n");
-	printList(&lst1);
-	printf("print list2 \n");
-	printList(&lst2);
-	
-    /*freeList(&lst1);
-    freeList(&lst2);
-    freeList(&mergedList);*/
+    freeList(&mergedList);
 }
 
 List getList()
@@ -58,10 +50,8 @@ List getList()
 
     makeEmptyList(&res);
 
-    printf("Please enter the number of items to be entered:\n");
     scanf("%d", &size);
 
-    printf("Please enter the numbers:\n");
     for(i = 0; i < size; i++)
     {
         scanf("%d", &num);
@@ -73,8 +63,22 @@ List getList()
 void freeList(List* lst)
 {
 
-}
+    //Define variables
+    ListNode* currNode=lst->head;
+    ListNode* tempNode;
 
+    if(lst->head != NULL)
+    {
+        while(currNode != NULL)
+        {
+            tempNode=currNode;
+            free(tempNode->dataPtr);
+            free(tempNode);
+            currNode=currNode->next;
+        }
+    }
+
+}
 void makeEmptyList(List* lst)
 {
 	(*lst).head = (*lst).tail = NULL;
@@ -91,7 +95,9 @@ ListNode* createNewListNode(int num, ListNode* next) {
 	ListNode* res;
 
 	res = (ListNode*)malloc(sizeof(ListNode));
+    checkAlloc(res);
 	res->dataPtr = (int*)malloc(sizeof(int));
+    checkAlloc(res->dataPtr);
 	*(res->dataPtr) = num;
 	res->next = next;
 
@@ -164,3 +170,11 @@ int isEmptyList(const List* lst)
 {
     return lst->head == NULL;
 }
+
+void checkAlloc(void* val )
+{
+    if (!val) {
+        puts("Allocation error\n");
+        exit(0);
+    }
+}    

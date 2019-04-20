@@ -28,17 +28,17 @@ List merge(List lst1, List lst2);
 void main()
 {
 
-List lst1, lst2, mergedList;
+    List lst1, lst2, mergedList;
 
-lst1 = getList();
-lst2 = getList();
+    lst1 = getList();
+    lst2 = getList();
 
-mergedList = merge(lst1,lst2);
+    mergedList = merge(lst1,lst2);
 
-printf("Merged list:\n");
-printList(&mergedList);
+    printf("Merged list:\n");
+    printList(&mergedList);
 
-freeList(&mergedList);
+    freeList(&mergedList);
 }
 
 
@@ -63,10 +63,8 @@ List getList()
 
     makeEmptyList(&res);
 
-    printf("Please enter the number of items to be entered:\n");
     scanf("%d", &size);
 
-    printf("Please enter the numbers:\n");
     for(i = 0; i < size; i++)
     {
         scanf("%d", &num);
@@ -77,6 +75,21 @@ List getList()
 
 void freeList(List* lst)
 {
+
+    //Define variables
+    ListNode* currNode=lst->head;
+    ListNode* tempNode;
+
+    if(lst->head != NULL)
+    {
+        while(currNode != NULL)
+        {
+            tempNode=currNode;
+            free(tempNode->dataPtr);
+            free(tempNode);
+            currNode=currNode->next;
+        }
+    }
 
 }
 
@@ -96,7 +109,9 @@ ListNode* createNewListNode(int num, ListNode* next) {
 	ListNode* res;
 
 	res = (ListNode*)malloc(sizeof(ListNode));
+    checkAlloc(res);
 	res->dataPtr = (int*)malloc(sizeof(int));
+    checkAlloc(res->dataPtr);
 	*(res->dataPtr) = num;
 	res->next = next;
 
@@ -184,3 +199,11 @@ List merge(List lst1, List lst2)
 
     return mergedList;
 }
+
+void checkAlloc(void* val )
+{
+    if (!val) {
+        puts("Allocation error\n");
+        exit(0);
+    }
+}    

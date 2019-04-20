@@ -33,6 +33,7 @@ Student unScramble (List  lst);
 void printList(List* lst);
 void printStudent(Student* student);
 void deleteNodeFromList( List* list,ListNode* prevNode, ListNode* nodeToBeDeleted);
+void checkAlloc(void* val);
 
 void main()
 {
@@ -115,7 +116,9 @@ ListNode* createNewListNode(char ch, ListNode* next)
 	ListNode* res;
 
 	res = (ListNode*)malloc(sizeof(ListNode));
+    checkAlloc(res);
 	res->dataPtr = (char*)malloc(sizeof(char));
+    checkAlloc(res);
 	*(res->dataPtr) = ch;
 	res->next = next;
 
@@ -213,3 +216,11 @@ void deleteNodeFromList( List* list,ListNode* prevNode, ListNode* nodeToBeDelete
     free(tempDataPtr);
     free(tempNode);
 }
+
+void checkAlloc(void* val )
+{
+    if (!val) {
+        puts("Allocation error\n");
+        exit(0);
+    }
+}    
