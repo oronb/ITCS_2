@@ -4,9 +4,7 @@
 #include <string.h>
 #include <stdlib.h> 
 
-
 //Declare definitions
-
 
 typedef struct YlistNode{
     int num;

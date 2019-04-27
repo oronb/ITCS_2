@@ -1,0 +1,91 @@
+
+void copyPointersArr(char** dest_arr, char** src_arr, int from, int len);
+void mergeSortPointersArray(char** arr, int left, int right);
+void mergePointersArray(char** arr, int left, int mid, int right);
+
+void copyPointersArr(char** dest_arr, char** src_arr, int from, int len)
+{
+/* 
+    Function to copy "len" elemnts from the given "src_arr" sub_array from index "from"
+    into the given "dest_arr" array
+*/
+    int i;
+
+    for(i = 0; i < len; i++)
+        dest_arr[i] = src_arr[i + from];
+}
+
+void mergeSortPointersArray(char** arr, int left, int right)
+{
+/*
+	Function to sort the given array using the Mergesort algorithm
+*/
+    int mid;
+
+    if(left >= right)
+        return; //nothing to sort
+
+    mid = (left + right) / 2;
+    mergeSortPointersArray(arr, left, mid);        //sort left half of the array
+    mergeSortPointersArray(arr, mid + 1, right);   //sort right half of the array 
+    mergePointersArray(arr, left, mid, right);		//merge the sorted left half with the sorted right half
+ 
+}
+void mergePointersArray(char** arr, int left, int mid, int right);
+{
+/*
+    Function to merge two sub-arrays of the given array arr.
+    The first sub-array is between index left and mid.
+    The second sub-array is between index mid+1 and right.
+*/ 
+    // Set Variables
+    int i, j, k, left_len, right_len;
+    char **left_arr, **right_arr;
+
+    // Copy data to temp arrays left_arr and right_arr
+    left_len = mid - left + 1;
+	right_len = right - mid;
+    left_arr = (char**)malloc(left_len * sizeof(char*)); // Allocate memory for the left temp arrays
+    right_arr = (char**)malloc(right_len * sizeof(char*)); // Allocate memory for the right temp arrays
+	copyPointersArr(left_arr, arr, left, left_len);
+	copyPointersArr(right_arr, arr, mid + 1, right_len);
+    
+    // Merge the temp arrays back into arr
+	i = 0;		// Initial index of left subarray
+	j = 0;		// Initial index of right subarray
+	k = left;	// Initial index of merged subarray
+
+        while (i < left_len && j < right_len)
+        {
+                if(left_arr[i] >= right_arr[j])
+                {
+                    arr[k] = left_arr[i];
+                    i++;
+                }
+                else
+                {
+                    arr[k] = right_arr[j];
+					j++;
+                }                
+            k++;
+        }
+
+    // Copy the remaining elemnts of left_arr, if there are any
+    while(i < left_len)
+    {
+        arr[k] = left_arr[i];
+        i++;
+        k++;
+    }
+    // Copy the remaining elemnts of right_arr, if there are any
+    while(i < right_len)
+    {
+        arr[k] =right_arr[i];
+        i++;
+        k++;
+    }    
+
+    //Free the temp arrays memory
+    free(left_arr); // Free the memory of the left temp array
+    free(right_arr); // Free the memory of the right temp array
+}    

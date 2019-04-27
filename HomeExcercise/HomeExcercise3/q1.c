@@ -161,9 +161,9 @@ void freeList(List* lst)
         while(currNode != NULL)
         {
             tempNode=currNode;
+            currNode=currNode->next;
             free(tempNode->dataPtr);
             free(tempNode);
-            currNode=currNode->next;
         }
     }
 }
@@ -202,7 +202,7 @@ void deleteNodeFromList( List* list,ListNode* prevNode, ListNode* nodeToBeDelete
     tempDataPtr=nodeToBeDeleted->dataPtr;
 
     //Set the prev node to point to the node after the node to be deleted
-    if((list->head == nodeToBeDeleted) && (prevNode == NULL))
+    if(list->head == nodeToBeDeleted)
     {
         list->head=nodeToBeDeleted->next;
     }

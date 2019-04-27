@@ -1,0 +1,89 @@
+
+void printRomfromDec(int num)
+{
+  int countDig=0; 
+  int i=0; // Index
+  int divNum=num; //Divided number (The left digit of the number)
+  int divNumTen;
+  if (num == 0)
+    return;
+  else if (num == 1)
+  {
+      printf("I");
+      return;
+  }
+  else if (num == 5) 
+  {
+      printf("V");
+      return;
+  }
+  else if (num == 10)
+  {
+      printf("X");
+      return;
+  }
+  else if (num == 50)
+  {
+      printf("L");
+      return;
+  }
+  else if (num == 100)
+  {
+      printf("C");
+      return;
+  }  
+  else if (num == 500)
+  {
+      printf("D");
+      return;
+  }
+  else if (num == 1000)
+  {
+      printf("M");
+      return;
+  }
+  else if (num == 4000)
+  {
+      printf("MMMM");
+      return;
+  }
+  else
+  {
+      if (num < 10)
+      {
+          divNumTen = 1;
+          divNum = num;
+      }
+      else
+      {
+          while(divNum >= 10)
+          {
+              divNum = divNum / 10;
+              countDig++;
+          }
+          //Multiple the left digit in ten pow the number of digits after the left digit 
+          divNumTen = divNum;
+          for(i=1;i<=countDig;i++)
+          {
+              divNumTen = divNumTen * 10;
+          }
+      }         
+      if((divNum >= 1) && (divNum <= 3))
+      {
+        for(i = 1; i <= divNum; i++)
+            printRomfromDec(divNumTen);
+      }
+      else if((divNum == 4) || (divNum == 9))
+      {
+        printRomfromDec(divNumTen);
+        printRomfromDec((divNum * divNumTen) + divNumTen);
+      }
+      else if((divNum >= 6) && (divNum <= 8))
+      {
+        printRomfromDec(5 * divNumTen);
+        printRomfromDec((divNum - 5) * divNumTen);
+      }
+      //printf("Print %d before sending to recursion", num);
+      printRomfromDec(num - (divNum * divNumTen));
+    }    
+}
