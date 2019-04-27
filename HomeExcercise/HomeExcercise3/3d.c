@@ -83,14 +83,16 @@ int insertCoordinate(List *coord_list, int x, int y)
     YList* exitsYlist;
     YList newYList;
     int res;
-    YListNode* currYNode = exitsYlist->head;
-    YListNode* prevYNode = NULL;
+    YListNode* currYNode;
+    YListNode* prevYNode;
     XListNode* currXNode = coord_list->head;
     XListNode* prevXNode = NULL;
 
     if(searchValueInList(*coord_list,x,&searchRes))
     {
         exitsYlist=searchRes->YListInXNode;
+        currYNode = exitsYlist->head;
+        prevYNode = NULL;
         //Check if y exists in y list 
         if(searchValueInYList(*exitsYlist, y))
         {
