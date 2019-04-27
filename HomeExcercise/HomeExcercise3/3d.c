@@ -38,12 +38,16 @@ int searchValueInList(List lst, int num, XListNode** res);
 int searchValueInYList(YList lst, int num);
 void makeEmptyList(List* lst);
 void makeEmptyYList(YList* lst);
+void insertDataToList(List* lst, int num, YList ylst, XListNode* prevXNode, XListNode* currXNode);
 void insertDataToEndList(List* lst, int num, YList YListInXNode);
 void insertDataToEndYList(YList* lst, int num);
+void insertDataToYList(YList* lst,int y,YListNode* prevYNode,YListNode* currYNode);
 XListNode* createNewListXNode(int num, YList ylst, XListNode* next, XListNode* prev);
 YListNode* createNewYListNode(int num, YListNode* next);
 void insertXNodeToEndList(List* lst, XListNode * newTail);
+void insertXNodeToList(List* lst, XListNode * prevXNode, XListNode * newXNode, XListNode * nextXNode);
 void insertNodeToEndYList(YList* lst, YListNode * newTail);
+void insertNodeToYList(YList* list,YListNode* prevNode, YListNode* newNode, YListNode* nextNode);
 int insertCoordinate(List *coord_list, int x, int y);
 int isEmptyList(const List* lst);
 int isEmptyYList(const YList* lst);
@@ -80,10 +84,16 @@ int insertCoordinate(List *coord_list, int x, int y)
     YList* exitsYlist;
     YList newYList;
     int res;
+    YListNode* currYNode;
+    YListNode* prevYNode;
+    XListNode* currXNode = coord_list->head;
+    XListNode* prevXNode = NULL;
 
     if(searchValueInList(*coord_list,x,&searchRes))
     {
         exitsYlist=searchRes->YListInXNode;
+        currYNode = exitsYlist->head;
+        prevYNode = NULL;
         //Check if y exists in y list 
         if(searchValueInYList(*exitsYlist, y))
         {
@@ -93,15 +103,24 @@ int insertCoordinate(List *coord_list, int x, int y)
         {
             res=0;
         }
-            
-        insertDataToEndYList(exitsYlist,y);
+        while(currYNode != NULL || currYNode->num >= y)
+        {
+            prevYNode=currYNode;
+            currYNode=currYNode->next;
+        }           
+        insertDataToYList(exitsYlist,y,prevYNode,currYNode);
     }
     else
     {
         res=0;
         makeEmptyYList(&newYList);
         insertDataToEndYList(&newYList,y);
-        insertDataToEndList(coord_list,x,newYList);
+        while(currXNode != NULL || currXNode->num >= x)
+        {
+            prevXNode=currXNode;
+            currXNode=currXNode->next;
+        }
+        insertDataToList(coord_list,x,newYList,prevXNode,currXNode);
     }
     return res;
 }
@@ -196,7 +215,40 @@ void insertDataToEndList(List* lst, int num, YList ylst)
 	insertXNodeToEndList(lst, newTail);
 }
 
+//Insert Xnode to Xnode's list
+void insertDataToList(List* lst, int num, YList ylst, XListNode* prevXNode, XListNode* currXNode) 
+{
+	XListNode* newXNode;
+
+	newXNode = createNewListXNode(num, ylst, currXNode, prevXNode);
+	insertXNodeToList(lst, prevXNode,newXNode,currXNode);
+}
+
+void insertNodeToYList( YList* list,YListNode* prevYNode, YListNode* newYNode, YListNode* nextYNode)
+{
+    if(prevYNode == NULL)
+    {
+        list->head=newYNode;
+    }
+    else
+    {
+        prevYNode->next = newYNode;
+    }  
+    if(nextYNode == NULL)
+    {
+        list->tail = newYNode;
+    }
+    newYNode->next=nextYNode;
+}
+
+void insertDataToYList(YList* lst,int y,YListNode* prevYNode,YListNode* currYNode)
+{
+    YListNode* newYNode;
+    newYNode = createNewYListNode(y,currYNode);
+    insertNodeToYList(lst,prevYNode,newYNode,currYNode);
+}
 //Insert Ynode to the end of Ynode's list
+
 void insertDataToEndYList(YList* lst, int num) 
 {
 	YListNode* newTail;
@@ -249,6 +301,25 @@ void insertXNodeToEndList(List* lst, XListNode * newTail)
 		lst->tail->next = newTail;
 		lst->tail = newTail;
 	}
+}
+//Inserts Xnode to Xnode's list
+
+void insertXNodeToList(List* lst, XListNode * prevXNode, XListNode * newXNode, XListNode * nextXNode) 
+{
+    if(prevXNode == NULL)
+    {
+        lst->head=newXNode;
+    }
+    else
+    {
+        prevXNode->next = newXNode;
+    }  
+    if(nextXNode == NULL)
+    {
+        lst->tail = newXNode;
+    }
+    newXNode->prev=prevXNode;
+    newXNode->next=nextXNode;
 }
 
 //Inserts Ynode to the end of Ynode's list
