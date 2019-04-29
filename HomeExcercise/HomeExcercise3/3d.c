@@ -102,7 +102,7 @@ int insertCoordinate(List *coord_list, int x, int y)
         {
             res=0;
         }
-        while(currYNode != NULL || currYNode->num >= y)
+        while(currYNode != NULL && currYNode->num <= y)
         {
             prevYNode=currYNode;
             currYNode=currYNode->next;
@@ -114,7 +114,7 @@ int insertCoordinate(List *coord_list, int x, int y)
         res=0;
         makeEmptyYList(&newYList);
         insertDataToEndYList(&newYList,y);
-        while(currXNode != NULL || currXNode->num >= x)
+        while(currXNode != NULL && currXNode->num <= x)
         {
             prevXNode=currXNode;
             currXNode=currXNode->next;
