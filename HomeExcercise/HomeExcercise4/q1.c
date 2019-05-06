@@ -18,8 +18,13 @@ typedef struct tree
 
 //Declare Functions
 Tree BuildTreeFromArray( int  *arr, int  size);
-void printTreeInorder(tree); //Copy from Keren's presentation
-void printLeafList(tree); //Check if exists in Keren's presentation
+void BuildTreeFromArrayHelper(int *arr, TreeNode **curr, int size);
+void printTreeInOrder(Tree t); //Copy from Keren's presentation
+void printTreeInOrderRec(TreeNode *t);
+void printLeafList(Tree tree); //Check if exists in Keren's presentation
+TreeNode* createNewTreeNode(int data, TreeNode* left, TreeNode* right); //Create new tree node
+void freeTree(Tree tr);
+void freeTreeRec(TreeNode *root);
 
 void main()
 {
@@ -37,8 +42,81 @@ void main()
 
     printf("The tree in inorder (LDR) format:\n");
 
-    printTreeInorder(tr); //Print the tree in-order (LDR)
+    printTreeInOrder(tr); //Print the tree in-order (LDR)
 
     freeTree(tr);
 
+}
+
+Tree BuildTreeFromArray( int  *arr, int  size)
+{
+    Tree tree;
+    tree.root=NULL;
+    if(size != 0)
+    {
+        BuildTreeFromArrayHelper(arr, &tree.root, size);
+    }
+    return tree;
+}
+
+void BuildTreeFromArrayHelper(int *arr, TreeNode **curr, int size)
+{
+    int leftSize=size/2, rightSize=size/2, midPlace=size/2;
+    TreeNode *leftTNode=NULL, *rightTNode=NULL;
+    int midValue=arr[midPlace];
+    if(midValue == -1 || size == 0)
+    {
+        return;
+    }
+    else
+    {
+        *curr=createNewTreeNode(midValue,NULL,NULL); //create root
+        BuildTreeFromArrayHelper(arr+leftSize+1, &rightTNode,rightSize); // Build right branch
+        BuildTreeFromArrayHelper(arr,&leftTNode,leftSize); // Build left branch  
+        (*curr)->right=rightTNode;
+        (*curr)->left=leftTNode;
+    }
+}
+
+void freeTree(Tree tr)
+{
+	freeTreeRec(tr.root);
+}
+
+TreeNode* createNewTreeNode(int data, TreeNode* left, TreeNode* right)
+{
+	TreeNode* res = (TreeNode*)malloc(sizeof(TreeNode));
+
+	res->data = data;
+	res->left = left;
+	res->right = right;
+
+	return res;
+}
+
+
+//FreeTreeRec() function recursively free all tree nodes.
+void freeTreeRec(TreeNode *root)
+{
+	if (root != NULL)
+	{
+		freeTreeRec(root->left);
+		freeTreeRec(root->right);
+		free(root);
+	}
+}
+
+void printTreeInOrder(Tree t)
+{
+    printTreeInOrderRec(t.root);
+}
+
+void printTreeInOrderRec(TreeNode *t)
+{
+    if (t == NULL)
+        return;
+
+    printTreeInOrderRec(t->left);
+    printf ("%d ",t->data);
+    printTreeInOrderRec(t->right);
 }

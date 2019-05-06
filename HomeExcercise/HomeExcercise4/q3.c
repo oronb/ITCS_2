@@ -33,7 +33,7 @@ Tree BuildTreeFromArrayWithLeafList(int *arr, int size);
 TreeNode* findParent(Tree tr, int parentData, int branchSelect);
 Tree AddLeaf(tr, p, branchSelect, data);
 void printTreeInorder(tree); //Copy from Keren's presentation
-void printLeafList(tree); //Check if exists in Keren's presentation
+void printLeafList(tree); //Check if exists in Keren's
 
 void main()
 
