@@ -23,7 +23,7 @@ typedef struct tree
 
 //Declare functions
 BOOL buildExpressionTree(char* str, Tree* tr);
-void buildExpressionTreeRec(char* str, int strSize, TreeNode** tr);
+void buildExpressionTreeRec(char* str, int strSize, TreeNode** tr,BOOL* expressionOK);
 double calcExpression(Tree tr);
 void calcExpressionRec(TreeNode* tr,double* num);
 TreeNode* createNewTreeNode(char data, TreeNode* left, TreeNode* right);
@@ -144,7 +144,7 @@ BOOL buildExpressionTree(char* str, Tree* tr)
     }
     
     if(expressionOK)
-        buildExpressionTreeRec(str, strSize, &tr->root); 
+        buildExpressionTreeRec(str, strSize, &tr->root, &expressionOK); 
     else
     {
         tr->root=createNewTreeNode('a',NULL,NULL);
@@ -153,7 +153,7 @@ BOOL buildExpressionTree(char* str, Tree* tr)
     return expressionOK;
 }
 
-void buildExpressionTreeRec(char* str, int strSize, TreeNode** tr)
+void buildExpressionTreeRec(char* str, int strSize, TreeNode** tr,BOOL* expressionOK)
 {
     int rightBrCount=0, leftBrCount=0, i=1, flag=TRUE;
     TreeNode *leftTNode=NULL, *rightTNode=NULL;
@@ -163,21 +163,25 @@ void buildExpressionTreeRec(char* str, int strSize, TreeNode** tr)
         {
             *tr=createNewTreeNode(str[0], NULL, NULL);
         }
+        else
+        {
+            *expressionOK=FALSE;
+        }
         return;       
     }
     else
     {
         if(str[0] == '(' && str[strSize-1] == ')')
         {
-            while (str[i] != '\0' && flag)
+            while (str[i] != '\0' && flag && *expressionOK==TRUE)
             {
                 if (str[i] == '+' || str[i] == '-' || str[i] == '*' || str[i] == '/' || str[i] == '%')
                 {
                     if(rightBrCount==leftBrCount)
                     {
                         *tr=createNewTreeNode(str[i], NULL, NULL);
-                        buildExpressionTreeRec(str+i+1,strSize-i-2,&rightTNode);
-                        buildExpressionTreeRec(str+1,i-1,&leftTNode);
+                        buildExpressionTreeRec(str+i+1,strSize-i-2,&rightTNode,expressionOK);
+                        buildExpressionTreeRec(str+1,i-1,&leftTNode,expressionOK);
                         (*tr)->right=rightTNode;
                         (*tr)->left=leftTNode;
                         flag=FALSE;
@@ -187,10 +191,29 @@ void buildExpressionTreeRec(char* str, int strSize, TreeNode** tr)
                     leftBrCount++;
                 else if(str[i] == ')')
                     rightBrCount++;                   
+                else if(checkIfCharIsDig(str[i]))
+                {
+                    if (checkIfCharIsDig(str[i+1]))
+                        *expressionOK=FALSE;
+                }
+                else
+                {
+                    *expressionOK=FALSE;
+                }
                 i++;
             }
-        }   
-    }   
+            if(leftBrCount != rightBrCount)
+            {
+                *expressionOK=FALSE;
+            }
+        }
+        else
+        {
+            *expressionOK=FALSE;
+        }
+        
+    }
+    
 }
 
 double calcExpression(Tree tr)

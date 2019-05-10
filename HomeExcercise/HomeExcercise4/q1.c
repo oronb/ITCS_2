@@ -76,6 +76,7 @@ void BuildTreeFromArrayHelper(int *arr, TreeNode **curr, int size)
         (*curr)->right=rightTNode;
         (*curr)->left=leftTNode;
     }
+
 }
 
 void freeTree(Tree tr)
